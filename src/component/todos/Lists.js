@@ -23,9 +23,9 @@ function Lists(props) {
             return setEditId(null)
         }
 
-        // if (e.key === 'Enter' || e.type === 'blur') {
-        //     update(id, e.target.value)
-        // }
+        if (e.key === 'Enter' || e.type === 'blur') {
+            update(id, e.target.value)
+        }
     }
 
     function update(id, value) {
@@ -66,7 +66,7 @@ function Lists(props) {
                             ) : (
                                 <p
                                     onClick={() => complete(todo.id)}
-                                    className={`text-xl font-semibold ` + (todo.isCompleted ? 'line-through' : '')}>
+                                    className={`text-xl font-semibold cursor-pointer w-full  ` + (todo.isCompleted ? 'line-through' : '')}>
                                     {todo.name}
                                 </p>
                             )}

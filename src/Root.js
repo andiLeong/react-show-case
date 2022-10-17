@@ -12,14 +12,16 @@ function Root() {
             <div>
                 <Navigation/>
             </div>
-            <header className="">
-                <Routes>
-                    <Route path="/" element={<App />}/>
-                    <Route path="about" element={<About />}/>
-                    <Route path="contact" element={<Contact />}/>
-                    <Route path="fetch" element={<Fetch />}/>
-                </Routes>
-            </header>
+            <div className={`bg-gray-100 min-h-screen`}>
+                <div className={`mx-auto max-w-7xl p-10`}>
+                    <Routes>
+                        <Route path="/" element={<App/>}/>
+                        <Route path="about" element={<About/>}/>
+                        <Route path="contact" element={<Contact/>}/>
+                        <Route path="fetch" element={<Fetch/>}/>
+                    </Routes>
+                </div>
+            </div>
         </div>
     );
 }
