@@ -29,6 +29,10 @@ function Navigation(props) {
                     <NavLink to="/fetch" className={({ isActive }) => navClass(isActive)} >
                         Fetch Api
                     </NavLink>
+
+                    <NavLink to="/github-issues" className={({ isActive }) => navClass(isActive)} >
+                        Github Issues
+                    </NavLink>
                 </li>
             </ul>
         </div>
