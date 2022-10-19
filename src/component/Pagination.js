@@ -1,124 +1,114 @@
 import React, {useEffect, useState} from 'react';
+import ChevronLeft from "component/svg/ChevronLeft";
+import ChevronRight from "component/svg/ChevronRight";
+import useArrayChunk from "module/useArrayChunk";
 
 function Pagination(props) {
 
-    const ranges = Array.from({length: props.totalPages}, (_, i) => i + 1)
+    const totalPages = Math.ceil(props.total / props.perPage)
+    const ranges = Array.from({length: totalPages}, (_, i) => i + 1)
     const [currentPage, setCurrentPage] = useState(props.page);
     const offsetSize = 3;
-
-    const [groups, setGroups] = useState(sliceIntoChunks(ranges, offsetSize));
+    const [groups] = useState(useArrayChunk(ranges, offsetSize));
     const [group, setGroup] = useState(pageGroup());
-    const [isFirstGroup, setIsFirstGroup] = useState(JSON.stringify(groups[0]) === JSON.stringify(group));
-    const [isLastGroup, setIsLastGroup] = useState(groups[groups.length - 1] === group);
+    const [isFirstGroup, setIsFirstGroup] = useState(inFirstGroup());
+    const [isLastGroup, setIsLastGroup] = useState(inLastGroup());
+    const [metaArray] = useState(meta());
     const groupClass = `relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 cursor-pointer`;
     const pageClass = `relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20`
+    const activePageClass = `z-10 bg-indigo-50 border-indigo-500 text-indigo-600`;
 
+    useEffect(() => {
+        console.log('props page changed')
+       setCurrentPage(props.page)
+    },[props.page])
 
-    // console.log('see what happens')
-    // console.log(groups.filter(group => group.includes(currentPage))[0])
+    function meta() {
 
+        let tem = [];
+        for (let i = 0; i < totalPages; i++) {
+            let onPage = i + 1;
 
-    function sliceIntoChunks(arr, chunkSize) {
-        const res = [];
-        for (let i = 0; i < arr.length; i += chunkSize) {
-            const chunk = arr.slice(i, i + chunkSize);
-            res.push(chunk);
+            if (i === 0) {
+                tem.push([1, props.perPage])
+            } else {
+
+                let diff;
+                let previousSum = tem[i - 1].reduce((pre, ini) => pre + ini, 0);
+                if (onPage === 2) {
+                    diff = 0
+                } else {
+                    diff = (onPage * props.perPage) - (props.perPage * 2);
+                }
+
+                let first = previousSum - diff
+
+                tem.push([
+                    first,
+                    onLastPage()
+                        ? props.total
+                        : first + (props.perPage - 1)
+                ])
+            }
         }
-        return res;
+        return tem;
     }
 
     function pageGroup() {
         return groups.filter(group => group.includes(currentPage))[0];
     }
 
-    function goToPageOf(e,page){
+    function goTo(e, page) {
         e.preventDefault()
+        goToPageOf(page)
+    }
+
+    function goToPageOf(page) {
+        let group = getGroupByPage(page)
+
+        setGroup(group)
+        setIsFirstGroup(inFirstGroup(page))
+        setIsLastGroup(inLastGroup(page))
         setPage(page)
+    }
+
+    function getGroupByPage(page) {
+        return groups.filter(pageNumber => pageNumber.includes(page))[0]
     }
 
     function goToPreviousPage(e) {
         e.preventDefault()
-        if(group[0] === currentPage){
-           goToPreviousGroup(e,currentPage - 1);
-           return;
-        }
-
-        setPage(currentPage - 1)
+        goToPageOf(currentPage - 1)
     }
 
     function goToNextPage(e) {
         e.preventDefault()
-        if(group[group.length - 1] === currentPage){
-           goToNextGroup(e,currentPage + 1);
-           return;
-        }
-
-        setPage(currentPage + 1 )
+        goToPageOf(currentPage + 1)
     }
 
-    function setPage(page){
+    function setPage(page) {
         setCurrentPage(page)
         props.setCurrentPage(page)
     }
 
-    function goToPreviousGroup(e,page = null) {
-        if (group.length === 0) {
-            let lastIndex = groups.length - 1;
-            let last = groups[lastIndex];
-            if(last.length === 1){
-                let previousTwoIndex = groups.length - 2;
-                let previousTwo = groups[previousTwoIndex];
-                console.log(previousTwo)
-                setGroup(previousTwo)
-                setIsFirstGroup(previousTwoIndex === 0)
-                setIsLastGroup(false)
-                setPage(page || previousTwo[0])
-                return;
-            }
-            setGroup(last)
-            setIsFirstGroup(lastIndex === 0)
-            setIsLastGroup(true)
-            setPage(page || last[0])
-            return;
-        }
-
-        let currentIndex = getCurrentGroupIndex();
-        let previousIndex = currentIndex - 1
-        if (previousIndex in groups) {
-            let previous = groups[previousIndex];
-            setGroup(previous)
-            setIsFirstGroup(previousIndex === 0)
-            setIsLastGroup(previousIndex === groups.length - 1)
-            setPage(page || previous[0])
-        }
+    function goToPreviousGroup(e, page = null) {
+        let previousIndex = getCurrentGroupIndex() - 1
+        goToPageOf(groups[previousIndex][0])
     }
 
-    function goToNextGroup(e,page = null) {
+    function goToNextGroup(e, page = null) {
         let nextIndex = getCurrentGroupIndex() + 1
-        if (nextIndex in groups) {
-            let next = groups[nextIndex]
-            setGroup(next)
-            setIsFirstGroup(nextIndex === 0)
-            setIsLastGroup(nextIndex === groups.length - 1)
-            setPage(page ?? next[0])
-        }
+        goToPageOf(groups[nextIndex][0])
     }
 
     function goToFirstPage(e) {
         e.preventDefault()
-        setGroup(groups[0])
-        setIsFirstGroup(true)
-        setIsLastGroup(false)
-        setCurrentPage(1)
-        props.setCurrentPage(1)
+        goToPageOf(1)
     }
 
     function goToLastPage(e) {
         e.preventDefault()
-        setGroup([])
-        setIsFirstGroup(false)
-        setIsLastGroup(false)
-        setPage(props.totalPages)
+        goToPageOf(totalPages)
     }
 
     function getCurrentGroupIndex() {
@@ -126,7 +116,26 @@ function Pagination(props) {
         return groupsInString.indexOf(group.join(''))
     }
 
-    // <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
+    function onLastPage() {
+        return onPage(totalPages)
+    }
+
+    function onFirstPage() {
+        return onPage(1)
+    }
+
+    function onPage(page) {
+        return page === currentPage;
+    }
+
+    function inFirstGroup(page = null) {
+        return groups[0].includes(page || currentPage)
+    }
+
+    function inLastGroup(page = null) {
+        return groups[groups.length - 1].includes(page || currentPage)
+    }
+
     return (
 
         <div className="flex items-center justify-between  bg-white px-4 py-3 sm:px-6">
@@ -140,91 +149,68 @@ function Pagination(props) {
                 <div>
                     <p className="text-sm text-gray-700">
                         Showing {}
-                        <span className="font-medium">1</span> {}
+                        <span className="font-medium">{metaArray[currentPage - 1][0]}</span> {}
                         to {}
-                        <span className="font-medium">10</span> {}
+                        <span className="font-medium">{metaArray[currentPage - 1][1]}</span> {}
                         of {}
-                        <span className="font-medium">97</span> {}
+                        <span className="font-medium">{props.total}</span> {}
                         results
                     </p>
                 </div>
                 <div>
                     <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                        {
-                            currentPage > 1 && (
-                                <a onClick={() => goToPreviousPage} href="#"
-                                   className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20">
-                                    <span className="sr-only">Previous</span>
-                                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                         fill="currentColor" aria-hidden="true">
-                                        <path fillRule="evenodd"
-                                              d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                                              clipRule="evenodd"/>
-                                    </svg>
-                                </a>
-                            )
-                        }
+                        {!onFirstPage() && (
+                            <a onClick={(e) => goToPreviousPage(e)} href="#"
+                               className={`${pageClass} rounded-l-md`}>
+                                <span className="sr-only">Previous</span>
+                                <ChevronLeft className={`h-5 w-5`}/>
+                            </a>
+                        )}
 
-                        {/*{*/}
-                        {/*    !isFirstGroup && (*/}
-                        {/*        <a onClick={() => goToFirstPage} href="#" aria-current="page"*/}
-                        {/*           className={`${pageClass} ${1 === currentPage ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600' : ''}`}>*/}
-                        {/*            {1}*/}
-                        {/*        </a>*/}
-                        {/*    )*/}
-                        {/*}*/}
+                        {!isFirstGroup && (
+                            <a onClick={(e) => goToFirstPage(e)} href="#" aria-current="page"
+                               className={`${pageClass} ${onFirstPage() ? activePageClass : ''}`}>
+                                {1}
+                            </a>
+                        )}
 
 
-                        {/*{*/}
-                        {/*    !isFirstGroup && (*/}
-                        {/*        <span onClick={() => goToPreviousGroup} className={`${groupClass}`} id={`js-previous-group`}>*/}
-                        {/*            ...*/}
-                        {/*        </span>*/}
-                        {/*    )*/}
-                        {/*}*/}
+                        {!isFirstGroup && (
+                            <span onClick={(e) => goToPreviousGroup(e)} className={`${groupClass}`}
+                                  id={`js-previous-group`}>
+                                ...
+                            </span>
+                        )}
 
-                        {
-                            group.map((group, index) => (
-                                <a onClick={(e) => goToPageOf(e,group)} key={index} href="#" aria-current="page"
-                                   className={`${pageClass} ${group === currentPage ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600' : ''}`}>
-                                    {group}
-                                </a>
-                            ))
-                        }
+                        {group.map((pageNumber, index) => (
+                            <a onClick={(e) => goTo(e, pageNumber)} key={index} href="#" aria-current="page"
+                               className={`${pageClass} ${onPage(pageNumber) ? activePageClass : ''}`}>
+                                {pageNumber}
+                            </a>
+                        ))}
 
-                        {
-                            (!isLastGroup && props.totalPages !== currentPage) && (
-                                <span onClick={() => goToNextGroup} className={`${groupClass}`}>
-                                    ...
-                                </span>
-                            )
-                        }
+                        {(!isLastGroup && !onLastPage()) && (
+                            <span onClick={(e) => goToNextGroup(e)} className={`${groupClass}`}>
+                                ...
+                            </span>
+                        )}
 
 
-                        {
-                            !isLastGroup && (
-                                <a onClick={() => goToLastPage} href="#" aria-current="page"
-                                   className={`${pageClass} ${props.totalPages === currentPage ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600' : ''}`}>
-                                    {props.totalPages}
-                                </a>
-                            )
-                        }
+                        {!isLastGroup && (
+                            <a onClick={(e) => goToLastPage(e)} href="#" aria-current="page"
+                               className={`${pageClass} ${onLastPage() ? activePageClass : ''}`}>
+                                {totalPages}
+                            </a>
+                        )}
 
 
-                        {
-                            props.totalPages !== currentPage && (
-                                <a onClick={ () => goToNextPage} href="#"
-                                   className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20">
-                                    <span className="sr-only">Next</span>
-                                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                         fill="currentColor" aria-hidden="true">
-                                        <path fillRule="evenodd"
-                                              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                                              clipRule="evenodd"/>
-                                    </svg>
-                                </a>
-                            )
-                        }
+                        {!onLastPage() && (
+                            <a onClick={(e) => goToNextPage(e)} href="#"
+                               className={`rounded-r-md ${pageClass}`}>
+                                <span className="sr-only">Next</span>
+                                <ChevronRight className={`h-5 w-5`}/>
+                            </a>
+                        )}
 
                     </nav>
                 </div>
