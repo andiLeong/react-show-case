@@ -1,9 +1,24 @@
 import React from 'react';
-import useFetch from "./hooks/useFetch";
+import { useQuery } from '@tanstack/react-query'
 
 function Redit(props) {
 
-    const [posts,isLoading] = useFetch('https://www.reddit.com/r/aww.json');
+    // const [posts,isLoading] = useFetch('https://www.reddit.com/r/aww.json');
+
+
+    const {
+        data: posts,
+        isLoading,
+        isError,
+        error,
+        isSuccess,
+    } = useQuery(['posts'], fetchPosts);
+
+    function fetchPosts() {
+        return fetch('https://www.reddit.com/r/aww.json').then(response =>
+            response.json()
+        );
+    }
 
     return (
         <div>
@@ -11,7 +26,7 @@ function Redit(props) {
                 <p>loading...</p>
             }
 
-            {posts && (
+            {(posts && isSuccess) && (
                 <ul>
                     {posts.data.children.map(post => (
                         <li key={post.data.id}>
@@ -21,6 +36,10 @@ function Redit(props) {
                         </li>
                     ))}
                 </ul>
+            )}
+
+            {isError && (
+                <p>{error.message}</p>
             )}
         </div>
     );

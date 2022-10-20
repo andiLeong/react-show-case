@@ -5,7 +5,8 @@ import App from "App";
 import About from "pages/About";
 import Contact from "pages/Contact";
 import Fetch from "pages/Fetch";
-import GithubIssue from "component/GithubIssue";
+import GithubIssue from "pages/GithubIssue";
+import Detail from "component/githubIssues/Detail";
 
 function Root() {
     return (
@@ -21,6 +22,7 @@ function Root() {
                         <Route path="contact" element={<Contact/>}/>
                         <Route path="fetch" element={<Fetch/>}/>
                         <Route path="github-issues" element={<GithubIssue />}/>
+                        <Route path="github-issues/detail" element={<Detail />}/>
                     </Routes>
                 </div>
             </div>

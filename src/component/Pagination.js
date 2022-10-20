@@ -11,17 +11,14 @@ function Pagination(props) {
     const offsetSize = 3;
     const [groups] = useState(useArrayChunk(ranges, offsetSize));
     const [group, setGroup] = useState(pageGroup());
-    const [isFirstGroup, setIsFirstGroup] = useState(inFirstGroup());
-    const [isLastGroup, setIsLastGroup] = useState(inLastGroup());
     const [metaArray] = useState(meta());
     const groupClass = `relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 cursor-pointer`;
     const pageClass = `relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20`
     const activePageClass = `z-10 bg-indigo-50 border-indigo-500 text-indigo-600`;
 
     useEffect(() => {
-        console.log('props page changed')
-       setCurrentPage(props.page)
-    },[props.page])
+        setCurrentPage(props.page)
+    }, [props.page])
 
     function meta() {
 
@@ -67,8 +64,6 @@ function Pagination(props) {
         let group = getGroupByPage(page)
 
         setGroup(group)
-        setIsFirstGroup(inFirstGroup(page))
-        setIsLastGroup(inLastGroup(page))
         setPage(page)
     }
 
@@ -91,12 +86,12 @@ function Pagination(props) {
         props.setCurrentPage(page)
     }
 
-    function goToPreviousGroup(e, page = null) {
+    function goToPreviousGroup(e) {
         let previousIndex = getCurrentGroupIndex() - 1
         goToPageOf(groups[previousIndex][0])
     }
 
-    function goToNextGroup(e, page = null) {
+    function goToNextGroup(e) {
         let nextIndex = getCurrentGroupIndex() + 1
         goToPageOf(groups[nextIndex][0])
     }
@@ -136,6 +131,7 @@ function Pagination(props) {
         return groups[groups.length - 1].includes(page || currentPage)
     }
 
+
     return (
 
         <div className="flex items-center justify-between  bg-white px-4 py-3 sm:px-6">
@@ -167,7 +163,7 @@ function Pagination(props) {
                             </a>
                         )}
 
-                        {!isFirstGroup && (
+                        {!inFirstGroup() && (
                             <a onClick={(e) => goToFirstPage(e)} href="#" aria-current="page"
                                className={`${pageClass} ${onFirstPage() ? activePageClass : ''}`}>
                                 {1}
@@ -175,7 +171,7 @@ function Pagination(props) {
                         )}
 
 
-                        {!isFirstGroup && (
+                        {!inFirstGroup() && (
                             <span onClick={(e) => goToPreviousGroup(e)} className={`${groupClass}`}
                                   id={`js-previous-group`}>
                                 ...
@@ -189,14 +185,14 @@ function Pagination(props) {
                             </a>
                         ))}
 
-                        {(!isLastGroup && !onLastPage()) && (
+                        {(!inLastGroup() && !onLastPage()) && (
                             <span onClick={(e) => goToNextGroup(e)} className={`${groupClass}`}>
                                 ...
                             </span>
                         )}
 
 
-                        {!isLastGroup && (
+                        {!inLastGroup() && (
                             <a onClick={(e) => goToLastPage(e)} href="#" aria-current="page"
                                className={`${pageClass} ${onLastPage() ? activePageClass : ''}`}>
                                 {totalPages}
