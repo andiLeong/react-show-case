@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
+import ReactMarkdown from 'react-markdown';
 
 function Comments({ number }) {
     const {
@@ -44,7 +45,9 @@ function Comments({ number }) {
                                 </p>
                             </div>
                             <div className={`bg-white p-4 rounded-b`}>
-                                <p className={``}>{comment.body}</p>
+                                <p className={``}>
+                                    <ReactMarkdown children={comment.body} />
+                                </p>
                             </div>
                         </div>
                     </div>

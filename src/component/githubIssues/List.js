@@ -1,22 +1,20 @@
 import React from 'react';
 import moment from 'moment';
-import Xcirle from 'component/svg/Xcirle';
-import Check from 'component/svg/Check';
 import Chat from 'component/svg/Chat';
 import { NavLink } from 'react-router-dom';
+import MergeIcon from 'component/githubIssues/MergeIcon';
 
 function List({ list, filter }) {
     return (
         <div
             className={`flex items-center justify-between p-3 border-b-2 border-gray-200 mb-1`}
         >
-            <div className={`flex items-start space-x-2`}>
+            <div className={`flex items-center space-x-2`}>
                 <p>
-                    {filter === 'open' ? (
-                        <Xcirle className={`h-5 w-5 text-green-600`} />
-                    ) : (
-                        <Check className={`h-5 w-5 text-red-600`} />
-                    )}
+                    <MergeIcon
+                        closed={list.closed_at !== null}
+                        merged={list.pull_request.merged_at !== null}
+                    />
                 </p>
 
                 <div>

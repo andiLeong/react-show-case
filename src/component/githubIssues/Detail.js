@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import Comments from 'component/githubIssues/Comments';
+import ReactMarkdown from 'react-markdown';
+import MergeIcon from 'component/githubIssues/MergeIcon';
 
 function Detail(props) {
     const params = useParams();
@@ -19,8 +21,6 @@ function Detail(props) {
         ).then(response => response.json());
     }
 
-    // console.log(params)
-
     return (
         <div className={`max-w-3xl mx-auto my-18 mt-5`}>
             {isLoading && <p>loading...</p>}
@@ -29,9 +29,18 @@ function Detail(props) {
                 <>
                     <div className={`pb-16 border-b border-gray-200`}>
                         <div className={`space-y-2`}>
-                            <div className={`flex items-end`}>
+                            <div className={`flex items-center`}>
+                                <p>
+                                    <MergeIcon
+                                        closed={issue.closed_at !== null}
+                                        merged={
+                                            issue.pull_request.merged_at !==
+                                            null
+                                        }
+                                    />
+                                </p>
                                 <h1
-                                    className={`font-bold text-gray-800 text-xl tracking-tight`}
+                                    className={`ml-2 font-bold text-gray-800 text-xl tracking-tight`}
                                 >
                                     {issue.title}
                                 </h1>
@@ -73,19 +82,21 @@ function Detail(props) {
                                     </p>
                                 </div>
                                 <div className={`bg-white p-4 rounded-b`}>
-                                    <p className={``}>{issue.body}</p>
+                                    <p className={`prose lg:prose-xl`}>
+                                        <ReactMarkdown children={issue.body} />
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div
-                        className={`space-y-12 mt-10 border-b border-b-2 pb-20`}
-                    >
-                        {issue.comments > 0 && (
+                    {issue.comments > 0 && (
+                        <div
+                            className={`space-y-12 mt-10 border-b border-b-2 pb-20`}
+                        >
                             <Comments number={issue.number} />
-                        )}
-                    </div>
+                        </div>
+                    )}
                     {issue.state === 'closed' && (
                         <div
                             className={`flex items-center mt-4 text-gray-400 space-x-1`}
