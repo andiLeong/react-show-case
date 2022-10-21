@@ -4,7 +4,7 @@ import Chat from 'component/svg/Chat';
 import { NavLink } from 'react-router-dom';
 import MergeIcon from 'component/githubIssues/MergeIcon';
 
-function List({ list, filter }) {
+function List({ list }) {
     return (
         <div
             className={`flex items-center justify-between p-3 border-b-2 border-gray-200 mb-1`}

@@ -20,10 +20,10 @@ function Navigation(props) {
                     </NavLink>
 
                     <NavLink
-                        to="/contact"
+                        to="/register"
                         className={({ isActive }) => navClass(isActive)}
                     >
-                        Contact
+                        Register
                     </NavLink>
 
                     <NavLink

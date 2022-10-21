@@ -3,10 +3,10 @@ import Navigation from 'Navigation';
 import { Route, Routes } from 'react-router-dom';
 import App from 'App';
 import About from 'pages/About';
-import Contact from 'pages/Contact';
 import Fetch from 'pages/Fetch';
 import GithubIssue from 'pages/GithubIssue';
 import Detail from 'component/githubIssues/Detail';
+import Register from 'pages/Register';
 
 function Root() {
     return (
@@ -19,7 +19,7 @@ function Root() {
                     <Routes>
                         <Route path="/" element={<App />} />
                         <Route path="about" element={<About />} />
-                        <Route path="contact" element={<Contact />} />
+                        <Route path="register" element={<Register />} />
                         <Route path="fetch" element={<Fetch />} />
                         <Route path="github-issues" element={<GithubIssue />} />
                         <Route path="github-issues/:id" element={<Detail />} />

@@ -34,9 +34,7 @@ function Lists(props) {
             )}
 
             {lists &&
-                lists.map((list, index) => (
-                    <List filter={filter} list={list} key={index} />
-                ))}
+                lists.map((list, index) => <List list={list} key={index} />)}
 
             {lists && (
                 <div className={`pt-5`}>
