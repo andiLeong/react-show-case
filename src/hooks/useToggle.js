@@ -1,15 +1,13 @@
-import {useState} from "react";
+import { useState } from 'react';
 
+function useToggle(init = false) {
+    const [show, setShow] = useState(init);
 
-function useToggle(init = false){
-
-    const [show,setShow] = useState(init);
-
-    function toggle(){
-       setShow( pre => !pre)
+    function toggle() {
+        setShow(pre => !pre);
     }
 
-    return [show,toggle];
-};
+    return [show, toggle];
+}
 
 export default useToggle;

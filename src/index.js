@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'index.css';
 import reportWebVitals from './reportWebVitals';
-import {BrowserRouter} from "react-router-dom";
-import Root from "./Root";
-import { QueryClientProvider ,QueryClient } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { BrowserRouter } from 'react-router-dom';
+import Root from './Root';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -13,13 +13,14 @@ const queryClient = new QueryClient({
             refetchOnWindowFocus: false,
         },
     },
-})
+});
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <BrowserRouter>
             <QueryClientProvider client={queryClient}>
-                <Root/>
+                <Root />
                 <ReactQueryDevtools />
             </QueryClientProvider>
         </BrowserRouter>

@@ -1,10 +1,8 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query';
 
 function Redit(props) {
-
     // const [posts,isLoading] = useFetch('https://www.reddit.com/r/aww.json');
-
 
     const {
         data: posts,
@@ -22,15 +20,15 @@ function Redit(props) {
 
     return (
         <div>
-            {isLoading &&
-                <p>loading...</p>
-            }
+            {isLoading && <p>loading...</p>}
 
-            {(posts && isSuccess) && (
+            {posts && isSuccess && (
                 <ul>
                     {posts.data.children.map(post => (
                         <li key={post.data.id}>
-                            <a href={`https://reddit.com${post.data.permalink}`}>
+                            <a
+                                href={`https://reddit.com${post.data.permalink}`}
+                            >
                                 {post.data.title}
                             </a>
                         </li>
@@ -38,9 +36,7 @@ function Redit(props) {
                 </ul>
             )}
 
-            {isError && (
-                <p>{error.message}</p>
-            )}
+            {isError && <p>{error.message}</p>}
         </div>
     );
 }

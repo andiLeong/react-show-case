@@ -1,8 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
-import PropTypes from "prop-types";
-import {CSSTransition} from "react-transition-group";
-import SuccessAlert from "component/alerts/SuccessAlert";
-import DangerAlert from "component/alerts/DangerAlert";
+import React, { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { CSSTransition } from 'react-transition-group';
+import SuccessAlert from 'component/alerts/SuccessAlert';
+import DangerAlert from 'component/alerts/DangerAlert';
 
 Alert.propTypes = {
     type: PropTypes.string,
@@ -10,16 +10,14 @@ Alert.propTypes = {
 };
 
 function Alert(props) {
-
     const [show, setShow] = useState(true);
     const showContainer = useRef(null);
 
     useEffect(() => {
         setTimeout(() => {
-            setShow(false)
-        }, 3000)
-    }, [])
-
+            setShow(false);
+        }, 3000);
+    }, []);
 
     return (
         <>
@@ -37,17 +35,21 @@ function Alert(props) {
                 }}
                 unmountOnExit
             >
+                <div ref={showContainer}>
+                    {props.type === 'success' && (
+                        <SuccessAlert
+                            setShow={setShow}
+                            message={props.message}
+                        />
+                    )}
 
-                <div ref={showContainer} >
-                    {props.type === 'success' &&
-                        <SuccessAlert setShow={setShow} message={props.message}/>
-                    }
-
-                    {props.type === 'danger' &&
-                        <DangerAlert setShow={setShow} message={props.message}/>
-                    }
+                    {props.type === 'danger' && (
+                        <DangerAlert
+                            setShow={setShow}
+                            message={props.message}
+                        />
+                    )}
                 </div>
-
             </CSSTransition>
         </>
     );

@@ -1,12 +1,11 @@
+import create from 'zustand';
+import { devtools } from 'zustand/middleware';
 
-import create from 'zustand'
-import { devtools } from 'zustand/middleware'
-
-const store = (set) => ({
+const store = set => ({
     filter: 'closed',
-    setFilter: (filter) => set(() => ({ filter: filter })),
+    setFilter: filter => set(() => ({ filter: filter })),
 });
 
-const useGithubIssuesFilterStore = create(devtools(store))
+const useGithubIssuesFilterStore = create(devtools(store));
 
 export default useGithubIssuesFilterStore;

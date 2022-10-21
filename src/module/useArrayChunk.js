@@ -5,6 +5,6 @@ function useArrayChunk(arr, size) {
         res.push(chunk);
     }
     return res;
-};
+}
 
 export default useArrayChunk;
