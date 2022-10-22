@@ -27,10 +27,10 @@ function Navigation(props) {
                     </NavLink>
 
                     <NavLink
-                        to="/about"
+                        to="/weather"
                         className={({ isActive }) => navClass(isActive)}
                     >
-                        About
+                        Weather
                     </NavLink>
 
                     <NavLink
