@@ -40,15 +40,6 @@ function Weather(props) {
         return Math.round(num);
     }
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            console.log('latitude ' + position.coords.latitude);
-            console.log('longitude ' + position.coords.longitude);
-        });
-    } else {
-        console.log('Geolocation is not supported by this browser.');
-    }
-
     useEffect(() => {
         if (weather) {
             future();
