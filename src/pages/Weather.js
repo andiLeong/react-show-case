@@ -100,7 +100,7 @@ function Weather(props) {
 
                                     <div>
                                         <img
-                                            src={`http://openweathermap.org/img/wn/${weather.today.weather[0].icon}@4x.png`}
+                                            src={`https://openweathermap.org/img/wn/${weather.today.weather[0].icon}@4x.png`}
                                             alt="icon"
                                         />
                                     </div>
@@ -134,7 +134,7 @@ function Weather(props) {
                                             >
                                                 <p>
                                                     <img
-                                                        src={`http://openweathermap.org/img/wn/${list.weather[0].icon}.png`}
+                                                        src={`https://openweathermap.org/img/wn/${list.weather[0].icon}.png`}
                                                         alt="icon"
                                                     />
                                                 </p>
