@@ -11,8 +11,8 @@ function Lists(props) {
     const [page, setPage] = useState(1);
     const totalRecords = 100;
     let perPage = 10;
-    let url = `https://api.github.com/repos/laravel/laravel/issues?page=${1}&per_page=${perPage}&state=${filter}`;
-    // let url = `https://api.github.com/repos/laravel/laravel/issues?page=${page}&per_page=${perPage}&state=closed`;
+    // let url = `https://api.github.com/repos/laravel/laravel/issues?page=${1}&per_page=${perPage}&state=${filter}`;
+    let url = `https://api.github.com/repos/laravel/laravel/issues?page=${page}&per_page=${perPage}&state=closed`;
 
     const [lists, loading] = useFetch(url);
 
