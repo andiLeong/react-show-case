@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLocalstorage from 'hooks/useLocalstorage';
 import Remaining from 'component/todos/Remaining';
 import Create from 'component/todos/Create';
@@ -6,10 +6,25 @@ import Check from 'component/todos/Check';
 import ClearCompleted from 'component/todos/ClearCompleted';
 import Filters from 'component/todos/Filters';
 import Lists from 'component/todos/Lists';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 function App() {
-    const [filter, setFilter] = useState('all');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [filter, setFilter] = useState(getFilterFromRoute);
     const [todos, setTodos] = useLocalstorage('todos', []);
+
+    useEffect(() => {
+        searchParams.set('filter', filter);
+        setSearchParams(searchParams);
+    }, [filter]);
+
+    function getFilterFromRoute() {
+        let filter = searchParams.get('filter');
+        if (!['all', 'completed', 'active'].includes(filter)) {
+            return 'all';
+        }
+        return filter;
+    }
 
     function mapAndSetTodo(fn) {
         let newTodos = todos.map(todo => {
@@ -57,7 +72,7 @@ function App() {
 
             {todos.length > 0 ? (
                 <div
-                    style={{ height: '27em' }}
+                    style={{ minHeight: '27em' }}
                     className={`space-y-8 divide-y col-span-5  flex flex-col`}
                 >
                     <div className={`flex-1`}>
